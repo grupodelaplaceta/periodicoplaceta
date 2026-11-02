@@ -8,12 +8,11 @@ export default function AvisoLegal() {
       <h2>1. Titular del sitio</h2>
       <p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de que el titular de este sitio web es:</p>
       <ul>
-        <li>Denominación: [NOMBRE DE LA ENTIDAD]</li>
-        <li>CIF: [CIF]</li>
+        <li>Denominación: Grupo de La Placeta</li>
+        <li>NIF: G27566900</li>
         <li>Domicilio: [DOMICILIO SOCIAL]</li>
         <li>Correo electrónico: junta@laplaceta.org</li>
         <li>Teléfono: [TELÉFONO]</li>
-        <li>Datos registrales: [DATOS DEL REGISTRO, si procede]</li>
       </ul>
       <h2>2. Objeto y condiciones de uso</h2>
       <p>Este sitio ofrece información sobre las actividades, noticias y eventos del Grupo de La Placeta. El acceso y uso son gratuitos. El usuario se compromete a utilizar el sitio de forma lícita, sin vulnerar derechos de terceros ni el orden público.</p>

@@ -6,7 +6,7 @@ export default function Privacidad() {
   return (
     <LegalLayout title="Política de privacidad">
       <h2>1. Responsable del tratamiento</h2>
-      <p>[NOMBRE DE LA ENTIDAD], CIF [CIF], con domicilio en [DOMICILIO SOCIAL] y correo de contacto junta@laplaceta.org.</p>
+      <p>Grupo de La Placeta, NIF G27566900, con domicilio en [DOMICILIO SOCIAL] y correo de contacto junta@laplaceta.org.</p>
       <h2>2. Finalidades y base jurídica</h2>
       <ul>
         <li><strong>Acceso a la información:</strong> navegar por el sitio no requiere facilitar datos personales.</li>

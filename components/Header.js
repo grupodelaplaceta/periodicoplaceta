@@ -17,6 +17,7 @@ export default function Header({ active = '' }) {
             <input type="search" name="q" placeholder="Buscar noticias" aria-label="Buscar noticias" />
             <button type="submit" aria-label="Buscar"><Icon name="search" className="ki" /></button>
           </form>
+          <Link className="btn ghost sm" href="/archivo">Archivo</Link>
           <Link className="btn ghost sm" href="/edicion"><Icon name="print" className="ki" />Edición 7 días</Link>
         </div>
         <nav className="wrap sec" aria-label="Secciones">
