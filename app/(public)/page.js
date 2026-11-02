@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Card from '@/components/Card';
 import Icon from '@/components/Icon';
+import RosetteIcon from '@/components/RosetteIcon';
 import Cover from '@/components/Cover';
 import { SECTIONS } from '@/lib/sections';
 import { supabaseServer } from '@/lib/supabase-server';
@@ -8,10 +9,14 @@ import { supabaseServer } from '@/lib/supabase-server';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const { data: arts = [], error } = await supabaseServer()
-    .from('pepl27_articles').select('*').eq('status', 'publicada').order('published_at', { ascending: false });
-  if (error) {
-    console.error('Error cargando noticias:', error.message);
+  let arts = [];
+  try {
+    const { data, error } = await supabaseServer()
+      .from('pepl27_articles').select('*').eq('status', 'publicada').order('published_at', { ascending: false });
+    if (error) throw new Error(error.message);
+    arts = data || [];
+  } catch (e) {
+    console.error('Error cargando noticias:', e.message);
     return <div className="wrap"><p className="empty">No se pueden cargar las noticias en este momento. Inténtalo en unos minutos.</p></div>;
   }
   const lead = arts.find((a) => a.featured) || arts[0];
@@ -42,7 +47,7 @@ export default async function Home() {
         return (
           <section className="block" key={s.id} aria-labelledby={`s-${s.id}`}>
             <div className="bh">
-              <div className="t"><span className="tile"><Icon name={s.icon} /></span><h2 id={`s-${s.id}`}>{s.name}</h2></div>
+              <div className="t"><RosetteIcon name={s.icon} /><h2 id={`s-${s.id}`}>{s.name}</h2></div>
               <Link className="more" href={`/seccion/${s.id}`}>Ver todo</Link>
             </div>
             <div className="rail">{items.map((a) => <Card key={a.id} a={a} />)}</div>

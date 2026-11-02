@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Card from '@/components/Card';
 import Icon from '@/components/Icon';
+import RosetteIcon from '@/components/RosetteIcon';
 import { SECTIONS, sectionById } from '@/lib/sections';
 import { supabaseServer } from '@/lib/supabase-server';
 
@@ -22,7 +23,7 @@ export default async function Seccion({ params }) {
     <div className="wrap">
       <nav className="crumbs" aria-label="Migas"><a href="/">Portada</a> / <span>{sec.name}</span></nav>
       <div className="bh big">
-        <div className="t"><span className="tile"><Icon name={sec.icon} /></span><h1>{sec.name}</h1></div>
+        <div className="t"><RosetteIcon name={sec.icon} /><h1>{sec.name}</h1></div>
         <span className="cnt">{items.length} artículos</span>
       </div>
       {items.length ? <div className="grid">{items.map((a) => <Card key={a.id} a={a} />)}</div>

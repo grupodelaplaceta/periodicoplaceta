@@ -6,7 +6,6 @@ export const metadata = {
   description: 'Noticias, actividades y eventos del Grupo de La Placeta.',
   alternates: { types: { 'application/rss+xml': '/feed.xml' } },
   robots: { index: true, follow: true },
-  icons: { icon: '/assets/logo.png' },
 };
 
 export default function RootLayout({ children }) {

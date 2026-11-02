@@ -151,3 +151,42 @@ update public.pepl27_profiles set role = 'admin' where lower(email) = 'junta@lap
 --    con el correo y la contraseña que quieras, y marca "Auto Confirm User").
 -- Admin preparado: junta@laplaceta.org (se asigna solo al registrarse).
 -- =====================================================================
+
+-- =====================================================================
+-- NOVEDADES: likes, buscador y bloques del editor
+-- =====================================================================
+alter table public.pepl27_articles add column if not exists likes_count integer not null default 0;
+
+create table if not exists public.pepl27_likes (
+  article_id uuid references public.pepl27_articles(id) on delete cascade,
+  visitor text not null,
+  created_at timestamptz not null default now(),
+  primary key (article_id, visitor)
+);
+alter table public.pepl27_likes enable row level security;   -- sin políticas: nadie lee la tabla directamente
+
+create or replace function public.pepl27_toggle_like(p_article uuid, p_visitor text)
+returns table(liked boolean, total integer) language plpgsql security definer set search_path = public as $$
+declare v_exists boolean; v_total integer;
+begin
+  if p_visitor is null or length(p_visitor) < 8 or length(p_visitor) > 80 then
+    raise exception 'Visitante no válido';
+  end if;
+  select exists(select 1 from public.pepl27_likes where article_id = p_article and visitor = p_visitor) into v_exists;
+  if v_exists then
+    delete from public.pepl27_likes where article_id = p_article and visitor = p_visitor;
+  else
+    insert into public.pepl27_likes(article_id, visitor) values (p_article, p_visitor);
+  end if;
+  select count(*)::int into v_total from public.pepl27_likes where article_id = p_article;
+  update public.pepl27_articles set likes_count = v_total where id = p_article;
+  return query select not v_exists, v_total;
+end $$;
+
+create or replace function public.pepl27_has_like(p_article uuid, p_visitor text)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists(select 1 from public.pepl27_likes where article_id = p_article and visitor = p_visitor)
+$$;
+
+grant execute on function public.pepl27_toggle_like(uuid, text) to anon, authenticated;
+grant execute on function public.pepl27_has_like(uuid, text) to anon, authenticated;

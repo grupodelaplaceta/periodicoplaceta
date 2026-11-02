@@ -6,6 +6,10 @@ import Icon from '@/components/Icon';
 import { sectionById } from '@/lib/sections';
 import { readMin, fmtDate } from '@/lib/format';
 import { supabaseServer } from '@/lib/supabase-server';
+import ArticleBody from '@/components/ArticleBody';
+import Likes from '@/components/Likes';
+import Share from '@/components/Share';
+import RosetteIcon from '@/components/RosetteIcon';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,7 +55,9 @@ export default async function Noticia({ params }) {
         <time dateTime={a.published_at}>{fmtDate(a.published_at)}</time><span className="sep" />
         <span className="rt"><Icon name="clock" className="ki" />{readMin(a.body)} min de lectura</span>
       </div>
-      <div className="body" style={{ marginTop: 26 }} dangerouslySetInnerHTML={{ __html: a.body }} />
+      <ArticleBody html={a.body} />
+      <div className="actions-row"><Likes articleId={a.id} initial={a.likes_count || 0} /></div>
+      <Share url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://periodicoplaceta.vercel.app'}/noticias/${a.slug}`} title={a.title} />
       {related.length > 0 && (
         <section className="block">
           <h2 className="rel-h">Más de {sec.name}</h2>

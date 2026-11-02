@@ -10,8 +10,8 @@ const TOOLS = [
   ['bold', 'N', 'Negrita'], ['italic', 'I', 'Cursiva'], ['underline', 'S', 'Subrayado'],
   ['formatBlock:h2', 'H2', 'Título'], ['formatBlock:h3', 'H3', 'Subtítulo'],
   ['insertUnorderedList', '•', 'Viñetas'], ['insertOrderedList', '1.', 'Numerada'],
-  ['formatBlock:blockquote', '❝', 'Cita'], ['createLink', '🔗', 'Enlace'],
-  ['insertImage', '🖼', 'Imagen por URL'], ['justifyCenter', '≡', 'Centrar'],
+  ['formatBlock:blockquote', '❝', 'Cita'], ['createLink', 'Enlace', 'Enlace'],
+  ['insertImage', 'Img', 'Imagen por URL'], ['justifyCenter', '≡', 'Centrar'],
   ['removeFormat', 'Tx', 'Quitar formato'], ['undo', '↶', 'Deshacer'], ['redo', '↷', 'Rehacer'],
 ];
 
@@ -42,10 +42,48 @@ export default function ArticleForm({ article = null }) {
   const set = (k) => (e) => setF({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
   const cmd = (c) => {
     ed.current.focus();
+    const ins = (h) => document.execCommand('insertHTML', false, h);
     if (c.startsWith('formatBlock:')) return document.execCommand('formatBlock', false, c.split(':')[1]);
     if (c === 'createLink') { const u = prompt('URL del enlace'); if (u) document.execCommand('createLink', false, u); return; }
-    if (c === 'insertImage') { const u = prompt('URL de la imagen'); if (u) document.execCommand('insertHTML', false, `<img src="${u}" alt="">`); return; }
+    if (c === 'insertImage') { const u = prompt('URL de la imagen'); if (u) ins(`<img src="${u}" alt="">`); return; }
+    if (c === 'ins:img') return pickImage();
+    if (c === 'ins:table') return ins('<table><tr><th>Concepto</th><th>Importe</th></tr><tr><td>Dato</td><td>0 €</td></tr></table><p></p>');
+    if (c === 'ins:video') {
+      const u = prompt('Enlace de YouTube o Vimeo') || '';
+      const yt = u.match(/(?:v=|youtu\.be\/)([\w-]{6,})/), vm = u.match(/vimeo\.com\/(\d+)/);
+      const src = yt ? `https://www.youtube.com/embed/${yt[1]}` : vm ? `https://player.vimeo.com/video/${vm[1]}` : null;
+      if (src) ins(`<div class="video"><iframe src="${src}" title="Vídeo" allowfullscreen loading="lazy"></iframe></div><p></p>`);
+      else if (u) setMsg({ type: 'err', text: 'Enlace de vídeo no reconocido.' });
+      return;
+    }
+    if (c === 'ins:button') {
+      const text = prompt('Texto del botón', 'Leer más'); const url = prompt('Enlace del botón (https://…)');
+      if (text && url) ins(`<p><a class="pl-btn" href="${url}">${text}</a></p>`);
+      return;
+    }
+    if (c === 'ins:sim') {
+      const title = prompt('Título del simulador', 'Simulador de cuotas') || 'Simulador';
+      ins(`<div class="sim" data-title="${title}" data-amount="10000" data-months="60" data-rate="4">Simulador: se muestra en la web</div><p></p>`);
+      return;
+    }
+    if (c === 'ins:callout') return ins('<div class="callout"><strong>Dato destacado:</strong> escribe aquí lo más importante.</div><p></p>');
+    if (c === 'ins:hr') return ins('<hr><p></p>');
     document.execCommand(c, false, null);
+  };
+
+  const pickImage = () => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = async () => {
+      const file = inp.files[0]; if (!file) return;
+      const path = `cuerpo/${Date.now()}-${file.name.replace(/[^\w.-]/g, '_')}`;
+      const { error } = await sb.storage.from('pepl27_covers').upload(path, file);
+      if (error) return setMsg({ type: 'err', text: 'No se pudo subir la imagen: ' + error.message });
+      const url = sb.storage.from('pepl27_covers').getPublicUrl(path).data.publicUrl;
+      ed.current.focus();
+      document.execCommand('insertHTML', false, `<img src="${url}" alt="">`);
+    };
+    inp.click();
   };
 
   const upload = async (e) => {
@@ -132,6 +170,11 @@ export default function ArticleForm({ article = null }) {
               style={c === 'bold' ? { fontWeight: 900 } : c === 'italic' ? { fontStyle: 'italic' } : c === 'underline' ? { textDecoration: 'underline' } : undefined}>
               {label}
             </button>
+          ))}
+        </div>
+        <div className="tb2" style={{ marginTop: 10 }}>
+          {[['ins:table', 'Tabla'], ['ins:img', 'Imagen (subir)'], ['ins:video', 'Vídeo'], ['ins:button', 'Botón'], ['ins:sim', 'Simulador'], ['ins:callout', 'Recuadro'], ['ins:hr', 'Separador']].map(([c, label]) => (
+            <button type="button" key={c} onMouseDown={(e) => e.preventDefault()} onClick={() => cmd(c)}>{label}</button>
           ))}
         </div>
         <div ref={ed} className="editor" contentEditable suppressContentEditableWarning style={{ marginTop: 8 }} />

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Icon from '@/components/Icon';
 import { SECTIONS } from '@/lib/sections';
 
+
 export default function Header({ active = '' }) {
   return (
     <>
@@ -12,7 +13,11 @@ export default function Header({ active = '' }) {
           <Link href="/" className="brand" aria-label="Inicio">
             <Image src="/assets/logo.png" alt="Noticias y novedades de Grupo de La Placeta" width={1408} height={421} priority />
           </Link>
-          <Link className="btn ghost sm" href="/admin"><Icon name="pen" className="ki" />Redacción</Link>
+          <form action="/buscar" className="search" role="search">
+            <input type="search" name="q" placeholder="Buscar noticias" aria-label="Buscar noticias" />
+            <button type="submit" aria-label="Buscar"><Icon name="search" className="ki" /></button>
+          </form>
+          <Link className="btn ghost sm" href="/edicion"><Icon name="print" className="ki" />Edición 7 días</Link>
         </div>
         <nav className="wrap sec" aria-label="Secciones">
           <Link href="/" className={!active ? 'on' : ''}><Icon name="home" className="ki" />Portada</Link>
