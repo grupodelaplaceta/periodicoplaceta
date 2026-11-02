@@ -13,7 +13,11 @@ export default async function PanelLayout({ children }) {
   if (!profile || profile.role === 'lector') {
     return (
       <div className="adm">
-        <p className="msg err">Tu cuenta no tiene permisos de redacción. Pide a un administrador que te dé acceso.</p>
+        <p className="msg err">
+          {!profile
+            ? 'Tu cuenta no tiene perfil de redacción todavía. Ejecuta el bloque de reparación de la base de datos (DEPLOY.md, apartado "Reparar cuenta") o pide a un administrador que te dé acceso.'
+            : 'Tu cuenta tiene rol de lector y no puede acceder al panel. Pide a un administrador que te dé el rol de redactor o admin.'}
+        </p>
         <div className="actions" style={{ marginTop: 14 }}><LogoutButton /></div>
       </div>
     );

@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import CookieNotice from '@/components/CookieNotice';
+import ScrollWatch from '@/components/ScrollWatch';
 
 export default function PublicLayout({ children }) {
   return (
@@ -14,6 +15,7 @@ export default function PublicLayout({ children }) {
         <p className="legal-note">© Grupo de La Placeta. Datos del titular en el <a href="/aviso-legal">aviso legal</a>.</p>
       </footer>
       <CookieNotice />
+      <ScrollWatch />
     </>
   );
 }

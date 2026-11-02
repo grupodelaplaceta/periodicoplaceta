@@ -29,3 +29,6 @@
 - La clave publicable es pública por diseño; la seguridad la aplica la base de datos (RLS).
 - Nunca uses la clave `service_role` en el proyecto.
 - Como la clave se ha compartido en un chat, conviene rotarla en Supabase → Settings → API.
+
+## F. Reparar cuenta (si aparece "no tiene permisos de redacción")
+En Supabase → SQL Editor ejecuta `supabase/reparar-cuenta.sql`. Primero muestra el estado de la cuenta, después la pone como admin y, por último, la comprueba. Cierra sesión en la web y vuelve a entrar.
