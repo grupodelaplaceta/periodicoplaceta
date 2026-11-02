@@ -8,7 +8,7 @@ export default function RoleSelect({ id, role, isMe }) {
   const [err, setErr] = useState('');
   const change = async (e) => {
     setErr('');
-    const { error } = await supabaseBrowser().rpc('set_user_role', { target: id, new_role: e.target.value });
+    const { error } = await supabaseBrowser().rpc('pepl27_set_user_role', { target: id, new_role: e.target.value });
     if (error) setErr(error.message); else router.refresh();
   };
   return (

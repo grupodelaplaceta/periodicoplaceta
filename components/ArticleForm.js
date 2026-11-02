@@ -33,7 +33,7 @@ export default function ArticleForm({ article = null }) {
     (async () => {
       const { data: { user } } = await sb.auth.getUser();
       if (!user) return;
-      const { data } = await sb.from('profiles').select('role').eq('id', user.id).maybeSingle();
+      const { data } = await sb.from('pepl27_profiles').select('role').eq('id', user.id).maybeSingle();
       setRole(data?.role || null);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,9 +52,9 @@ export default function ArticleForm({ article = null }) {
     const file = e.target.files?.[0]; if (!file) return;
     setBusy(true); setMsg(null);
     const path = `${Date.now()}-${file.name.replace(/[^\w.-]/g, '_')}`;
-    const { error } = await sb.storage.from('covers').upload(path, file, { cacheControl: '3600' });
+    const { error } = await sb.storage.from('pepl27_covers').upload(path, file, { cacheControl: '3600' });
     if (error) setMsg({ type: 'err', text: 'No se pudo subir la imagen: ' + error.message });
-    else setF((p) => ({ ...p, cover_url: sb.storage.from('covers').getPublicUrl(path).data.publicUrl }));
+    else setF((p) => ({ ...p, cover_url: sb.storage.from('pepl27_covers').getPublicUrl(path).data.publicUrl }));
     setBusy(false);
   };
 
@@ -63,8 +63,8 @@ export default function ArticleForm({ article = null }) {
     if (!f.title.trim()) return setMsg({ type: 'err', text: 'Escribe un titular.' });
     setBusy(true);
     const { data: { user } } = await sb.auth.getUser();
-    const { data: prof } = await sb.from('profiles').select('full_name, email').eq('id', user.id).maybeSingle();
-    if (f.featured) await sb.from('articles').update({ featured: false }).eq('featured', true).neq('id', article?.id || '00000000-0000-0000-0000-000000000000');
+    const { data: prof } = await sb.from('pepl27_profiles').select('full_name, email').eq('id', user.id).maybeSingle();
+    if (f.featured) await sb.from('pepl27_articles').update({ featured: false }).eq('featured', true).neq('id', article?.id || '00000000-0000-0000-0000-000000000000');
     const row = {
       title: f.title.trim(), dek: f.dek.trim(), section: f.section, icon: f.icon || null,
       cover_url: f.cover_url || null, status: f.status, featured: f.featured,
@@ -72,8 +72,8 @@ export default function ArticleForm({ article = null }) {
       published_at: f.status === 'publicada' ? (article?.published_at || new Date().toISOString()) : null,
     };
     let error;
-    if (article) ({ error } = await sb.from('articles').update(row).eq('id', article.id));
-    else ({ error } = await sb.from('articles').insert({
+    if (article) ({ error } = await sb.from('pepl27_articles').update(row).eq('id', article.id));
+    else ({ error } = await sb.from('pepl27_articles').insert({
       ...row, slug: `${slugify(f.title)}-${Math.random().toString(36).slice(2, 6)}`,
       author_id: user.id, author_name: prof?.full_name || prof?.email || 'Redacción',
     }));
@@ -84,7 +84,7 @@ export default function ArticleForm({ article = null }) {
 
   const remove = async () => {
     if (!article || !confirm('¿Eliminar esta noticia de forma permanente?')) return;
-    const { error } = await sb.from('articles').delete().eq('id', article.id);
+    const { error } = await sb.from('pepl27_articles').delete().eq('id', article.id);
     if (error) return setMsg({ type: 'err', text: error.message });
     router.push('/admin'); router.refresh();
   };

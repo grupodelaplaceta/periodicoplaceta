@@ -9,7 +9,7 @@ export default async function PanelLayout({ children }) {
   const sb = supabaseServer();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) redirect('/admin/login');
-  const { data: profile } = await sb.from('profiles').select('role, full_name').eq('id', user.id).maybeSingle();
+  const { data: profile } = await sb.from('pepl27_profiles').select('role, full_name').eq('id', user.id).maybeSingle();
   if (!profile || profile.role === 'lector') {
     return (
       <div className="adm">

@@ -10,7 +10,7 @@ import { supabaseServer } from '@/lib/supabase-server';
 export const dynamic = 'force-dynamic';
 
 async function getArticle(slug) {
-  const { data } = await supabaseServer().from('articles').select('*').eq('slug', slug).eq('status', 'publicada').maybeSingle();
+  const { data } = await supabaseServer().from('pepl27_articles').select('*').eq('slug', slug).eq('status', 'publicada').maybeSingle();
   return data;
 }
 
@@ -29,7 +29,7 @@ export default async function Noticia({ params }) {
   const a = await getArticle(params.slug);
   if (!a) notFound();
   const sec = sectionById(a.section);
-  const { data: related = [] } = await supabaseServer().from('articles').select('*')
+  const { data: related = [] } = await supabaseServer().from('pepl27_articles').select('*')
     .eq('status', 'publicada').eq('section', a.section).neq('id', a.id).limit(3);
   const jsonLd = {
     '@context': 'https://schema.org', '@type': 'NewsArticle', headline: a.title, description: a.dek,

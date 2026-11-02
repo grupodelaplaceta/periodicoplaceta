@@ -8,8 +8,12 @@ import { supabaseServer } from '@/lib/supabase-server';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const { data: arts = [] } = await supabaseServer()
-    .from('articles').select('*').eq('status', 'publicada').order('published_at', { ascending: false });
+  const { data: arts = [], error } = await supabaseServer()
+    .from('pepl27_articles').select('*').eq('status', 'publicada').order('published_at', { ascending: false });
+  if (error) {
+    console.error('Error cargando noticias:', error.message);
+    return <div className="wrap"><p className="empty">No se pueden cargar las noticias en este momento. Inténtalo en unos minutos.</p></div>;
+  }
   const lead = arts.find((a) => a.featured) || arts[0];
   const rest = arts.filter((a) => a !== lead);
 

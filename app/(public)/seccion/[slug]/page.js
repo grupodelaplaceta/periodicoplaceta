@@ -15,8 +15,9 @@ export async function generateMetadata({ params }) {
 export default async function Seccion({ params }) {
   const sec = SECTIONS.find((s) => s.id === params.slug);
   if (!sec) notFound();
-  const { data: items = [] } = await supabaseServer()
-    .from('articles').select('*').eq('status', 'publicada').eq('section', sec.id).order('published_at', { ascending: false });
+  const { data: items = [], error } = await supabaseServer()
+    .from('pepl27_articles').select('*').eq('status', 'publicada').eq('section', sec.id).order('published_at', { ascending: false });
+  if (error) console.error('Error sección:', error.message);
   return (
     <div className="wrap">
       <nav className="crumbs" aria-label="Migas"><a href="/">Portada</a> / <span>{sec.name}</span></nav>

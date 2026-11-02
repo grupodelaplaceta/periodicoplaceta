@@ -6,7 +6,7 @@ import { fmtDate } from '@/lib/format';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminHome() {
-  const { data: arts = [] } = await supabaseServer().from('articles')
+  const { data: arts = [] } = await supabaseServer().from('pepl27_articles')
     .select('id, title, section, status, featured, author_name, updated_at').order('updated_at', { ascending: false });
   return (
     <>

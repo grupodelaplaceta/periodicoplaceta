@@ -7,9 +7,9 @@ export const dynamic = 'force-dynamic';
 export default async function Usuarios() {
   const sb = supabaseServer();
   const { data: { user } } = await sb.auth.getUser();
-  const { data: me } = await sb.from('profiles').select('role').eq('id', user.id).maybeSingle();
+  const { data: me } = await sb.from('pepl27_profiles').select('role').eq('id', user.id).maybeSingle();
   if (me?.role !== 'admin') redirect('/admin');
-  const { data: people = [] } = await sb.from('profiles').select('id, email, full_name, role, created_at').order('created_at');
+  const { data: people = [] } = await sb.from('pepl27_profiles').select('id, email, full_name, role, created_at').order('created_at');
   return (
     <>
       <h1>Usuarios y roles</h1>
